@@ -1,0 +1,64 @@
+name: publish
+
+# Publishing is a tag, never a branch push: `v0.1.0` publishes both packages as they are at that
+# commit. The guard below fails the release when the tag and the package versions disagree, so a
+# tag can never ship a stale version. Provenance ties the tarball to this workflow run, which is
+# only possible because the repository is public.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: install
+        run: pnpm install --frozen-lockfile
+
+      - name: build the core
+        run: pnpm exec ng build crud-maker
+
+      - name: build the zorro adapter
+        run: pnpm exec ng build crud-maker-zorro
+
+      - name: fail when the tag and the package versions disagree
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          core=$(node -p "require('./projects/crud-maker/package.json').version")
+          adapter=$(node -p "require('./projects/crud-maker-zorro/package.json').version")
+          echo "tag=$tag core=$core adapter=$adapter"
+          if [ "$tag" != "$core" ] || [ "$tag" != "$adapter" ]; then
+            echo "::error::tag v$tag does not match crud-maker $core / crud-maker-zorro $adapter"
+            exit 1
+          fi
+
+      - name: publish crud-maker
+        run: npm publish dist/crud-maker --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # After the core, so the adapter's peer range resolves against a version that already exists.
+      - name: publish crud-maker-zorro
+        run: npm publish dist/crud-maker-zorro --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

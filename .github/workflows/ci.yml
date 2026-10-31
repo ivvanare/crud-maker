@@ -1,0 +1,43 @@
+name: ci
+
+# Two packages, one direction: the adapter may import the core, never the reverse. Because the
+# workspace resolves both through tsconfig paths to dist/, every gate builds in dependency order
+# — the adapter cannot compile before the core exists.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Reads packageManager from package.json, so the pnpm version is declared once.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: install
+        run: pnpm install --frozen-lockfile
+
+      - name: build the core
+        run: pnpm exec ng build crud-maker
+
+      - name: test the core
+        run: pnpm exec ng test crud-maker --watch=false
+
+      - name: build the zorro adapter
+        run: pnpm exec ng build crud-maker-zorro
+
+      - name: test the zorro adapter
+        run: pnpm exec ng test crud-maker-zorro --watch=false

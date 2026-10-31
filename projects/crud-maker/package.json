@@ -1,0 +1,34 @@
+{
+  "name": "crud-maker",
+  "version": "0.1.0",
+  "description": "CRUD screens from one JSON-shaped config: validated schema, signal-backed list state and a transport-agnostic engine. Logic only, no UI dependency.",
+  "license": "MIT",
+  "author": "ivvanare",
+  "homepage": "https://github.com/ivvanare/crud-maker#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivvanare/crud-maker.git",
+    "directory": "projects/crud-maker"
+  },
+  "bugs": {
+    "url": "https://github.com/ivvanare/crud-maker/issues"
+  },
+  "keywords": [
+    "angular",
+    "crud",
+    "signals",
+    "json-config",
+    "admin"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@angular/common": "^22.0.0",
+    "@angular/core": "^22.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}

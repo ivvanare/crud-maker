@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "cli": {
+    "packageManager": "pnpm"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "crud-maker": {
+      "projectType": "library",
+      "root": "projects/crud-maker",
+      "sourceRoot": "projects/crud-maker/src",
+      "prefix": "crud",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/crud-maker/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/crud-maker/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/crud-maker/tsconfig.spec.json",
+            "include": [
+              "**/*.spec.ts"
+            ]
+          }
+        }
+      }
+    },
+    "crud-maker-zorro": {
+      "projectType": "library",
+      "root": "projects/crud-maker-zorro",
+      "sourceRoot": "projects/crud-maker-zorro/src",
+      "prefix": "crud",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/crud-maker-zorro/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/crud-maker-zorro/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/crud-maker-zorro/tsconfig.spec.json",
+            "include": [
+              "**/*.spec.ts"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

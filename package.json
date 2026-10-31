@@ -1,0 +1,31 @@
+{
+  "name": "crud-maker-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Angular CRUD screens from one JSON-shaped config: crud-maker (logic) and its UI adapters.",
+  "license": "MIT",
+  "packageManager": "pnpm@12.15.0",
+  "scripts": {
+    "build": "ng build crud-maker && ng build crud-maker-zorro",
+    "test": "ng test crud-maker --watch=false && ng test crud-maker-zorro --watch=false",
+    "lint:types": "tsc -p projects/crud-maker/tsconfig.lib.json --noEmit"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.4",
+    "@angular/cli": "^22.2.4",
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/compiler-cli": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "jsdom": "^30.0.0",
+    "ng-packagr": "^22.2.0",
+    "ng-zorro-antd": "^22.1.2",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.0"
+  }
+}
