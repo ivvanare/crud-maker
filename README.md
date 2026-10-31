@@ -11,7 +11,25 @@ Two packages, one direction: **the adapter depends on the core, never the revers
 | [`crud-maker`](projects/crud-maker/README.md) | the whole engine: config, state, controller, transport, cell views. **No UI dependency.** |
 | [`crud-maker-zorro`](projects/crud-maker-zorro/README.md) | ng-zorro-antd screens: `crud-cell`, `crud-table`, `crud-form`, `crud-detail`. |
 
-## Install
+## Status
+
+**Not on npm yet.** The code is published here while it stabilises; `pnpm add crud-maker` will
+fail with a 404 until the first release. Until then, consume it from this repository:
+
+```bash
+git clone https://github.com/ivvanare/crud-maker.git ../crud-maker
+cd ../crud-maker && pnpm install && pnpm exec ng build crud-maker
+```
+
+and link the built package from your workspace:
+
+```json
+{ "dependencies": { "crud-maker": "link:../crud-maker/dist/crud-maker" } }
+```
+
+Rebuild this repository after every change to it — the link points at `dist/`, not at the source.
+
+## Install (once released)
 
 The install **is** the choice — there is no runtime flag to configure:
 
