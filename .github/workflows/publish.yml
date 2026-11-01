@@ -54,7 +54,17 @@ jobs:
             exit 1
           fi
 
-      # Without the token the publish steps are skipped below: a permanently red
+      # `./` is load-bearing: without it npm parses "dist/crud-maker" as the
+      # GitHub shorthand dist/crud-maker and dies in an ssh ls-remote, which is
+      # how the first release attempt failed. Packing runs on every tag, even
+      # before the token exists, so a packaging defect fails loudly instead of
+      # hiding behind a skipped publish.
+      - name: verify the packages pack
+        run: |
+          npm publish ./dist/crud-maker --dry-run
+          npm publish ./dist/crud-maker-zorro --dry-run
+
+      # Without the token the publish steps are skipped: a permanently red
       # workflow on every tag teaches everyone to ignore red, which is worse than
       # an honest green run that says it published nothing.
       - name: warn when publishing is disabled
@@ -63,13 +73,13 @@ jobs:
 
       - name: publish crud-maker
         if: env.NPM_TOKEN != ''
-        run: npm publish dist/crud-maker --access public --provenance
+        run: npm publish ./dist/crud-maker --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # After the core, so the adapter's peer range resolves against a version that already exists.
       - name: publish crud-maker-zorro
         if: env.NPM_TOKEN != ''
-        run: npm publish dist/crud-maker-zorro --access public --provenance
+        run: npm publish ./dist/crud-maker-zorro --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
