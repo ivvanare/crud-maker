@@ -125,6 +125,29 @@ describe('CrudListScreen', () => {
     expect(controller.state.search()).toBeNull();
   });
 
+  it('renders a from/to pair for a between filter', async () => {
+    const ranged = defineCrudConfig({
+      key: 'audit',
+      endpoint: 'admin/audit-events',
+      fields: [
+        { name: 'event', in: { list: true, form: false } },
+        { name: 'created_at', type: 'datetime', in: { list: true, form: false }, filters: ['between'] },
+      ],
+    });
+    const { element, transport } = setup(ranged);
+
+    const dates = element.querySelectorAll('input[type="datetime-local"]');
+    expect(dates).toHaveLength(2);
+
+    const to = dates[1] as HTMLInputElement;
+    to.value = '2026-11-02T18:00';
+    to.dispatchEvent(new Event('input'));
+    await tick(300);
+
+    const last = transport.listCalls.at(-1)!;
+    expect(last.filters['created_at_between']).toEqual([null, '2026-11-02T18:00']);
+  });
+
   it('shows no toolbar when the config exposes nothing to search or filter', () => {
     const { element } = setup(bareConfig);
 

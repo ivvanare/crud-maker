@@ -8,9 +8,10 @@
  * control. Nothing here decides what to show; it only translates controls into the
  * core's `CrudListState`, which owns paging, search and filters.
  *
- * Supported filter kinds, in the order preferred per field: `eq`, `like`, `gte`.
- * A field exposing only the others (`between`, `in`) gets no control yet, instead
- * of a control that could not work.
+ * Supported filter kinds, in the order preferred per field: `eq`, `like`, `gte`,
+ * `between`. A range (`between`) renders a from/to pair with a native date input.
+ * A field exposing only `in` gets no control yet, instead of a control that could
+ * not work.
  */
 import { Component, computed, input, output, signal, TemplateRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +27,7 @@ import { NzOptionComponent, NzSelectModule } from 'ng-zorro-antd/select';
 import { CrudTable } from '../table/crud-table';
 
 /** The kinds this toolbar can drive, in preference order. */
-const SUPPORTED_KINDS: readonly FilterKind[] = ['eq', 'like', 'gte'];
+const SUPPORTED_KINDS: readonly FilterKind[] = ['eq', 'like', 'gte', 'between'];
 
 /** How long a keystroke waits before it becomes a request. */
 const DEBOUNCE_MS = 250;
@@ -37,6 +38,10 @@ interface FilterControl {
   /** Static option list, when the field declares one; the control becomes a select. */
   options: readonly { label: string; value: string }[];
   numeric: boolean;
+  /** A from/to pair instead of a single input. */
+  range: boolean;
+  /** Native input type for a range control. */
+  inputType: 'date' | 'datetime-local';
 }
 
 @Component({
@@ -63,7 +68,24 @@ interface FilterControl {
           @for (control of filterControls(); track control.field.name) {
             <label class="crud-toolbar-field">
               <span>{{ control.field.label }}</span>
-              @if (control.options.length) {
+              @if (control.range) {
+                <span class="crud-toolbar-range">
+                  <input
+                    nz-input
+                    [type]="control.inputType"
+                    aria-label="From"
+                    [value]="filterValue(edgeKey(control.field.name, 'from'))"
+                    (input)="onRange(control, 'from', $any($event.target).value)"
+                  />
+                  <input
+                    nz-input
+                    [type]="control.inputType"
+                    aria-label="To"
+                    [value]="filterValue(edgeKey(control.field.name, 'to'))"
+                    (input)="onRange(control, 'to', $any($event.target).value)"
+                  />
+                </span>
+              } @else if (control.options.length) {
                 <nz-select
                   nzAllowClear
                   [nzPlaceHolder]="control.field.label"
@@ -126,6 +148,10 @@ interface FilterControl {
       .crud-toolbar-field span {
         font-size: 12px;
         color: var(--muted, rgba(0, 0, 0, 0.55));
+      }
+      .crud-toolbar-range {
+        display: flex;
+        gap: 6px;
       }
       .crud-list-error {
         margin: 0 0 12px;
@@ -194,8 +220,26 @@ export class CrudListScreen<T extends object = Record<string, unknown>> {
     }, DEBOUNCE_MS);
   }
 
-  protected filterValue(fieldName: string): string {
-    return this.filterValues()[fieldName] ?? '';
+  protected filterValue(key: string): string {
+    return this.filterValues()[key] ?? '';
+  }
+
+  /** Range edges live beside single values, keyed per edge. */
+  protected edgeKey(fieldName: string, edge: 'from' | 'to'): string {
+    return `${fieldName}__${edge}`;
+  }
+
+  protected onRange(control: FilterControl, edge: 'from' | 'to', value: string): void {
+    this.filterValues.set({ ...this.filterValues(), [this.edgeKey(control.field.name, edge)]: value });
+    if (this.filterTimer) clearTimeout(this.filterTimer);
+    this.filterTimer = setTimeout(() => {
+      const from = this.filterValue(this.edgeKey(control.field.name, 'from')).trim();
+      const to = this.filterValue(this.edgeKey(control.field.name, 'to')).trim();
+      // The engine's `between` takes exactly two edges; both empty clears the filter.
+      const next = from === '' && to === '' ? undefined : [from === '' ? null : from, to === '' ? null : to];
+      this.controller().state.setFilter(control.field.name, control.kind, next);
+      void this.controller().load();
+    }, DEBOUNCE_MS);
   }
 
   protected clearFilters(): void {
@@ -216,6 +260,13 @@ export class CrudListScreen<T extends object = Record<string, unknown>> {
     const options = Array.isArray(field.options)
       ? field.options.map((option) => ({ label: option.label, value: String(option.value) }))
       : [];
-    return { field, kind, options, numeric: field.type === 'number' && kind !== 'like' };
+    return {
+      field,
+      kind,
+      options,
+      numeric: field.type === 'number' && kind !== 'like',
+      range: kind === 'between',
+      inputType: field.type === 'date' ? 'date' : 'datetime-local',
+    };
   }
 }

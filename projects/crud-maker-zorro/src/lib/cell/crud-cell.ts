@@ -31,13 +31,13 @@ const NZ_STATUSES: readonly NzBadgeStatusType[] = [
         <nz-badge [nzStatus]="status()" [nzText]="view().text" />
       }
       @case ('tag') {
-        <nz-tag [nzColor]="color()">{{ view().text }}</nz-tag>
+        <nz-tag [nzColor]="color()" [attr.title]="hint()">{{ view().text }}</nz-tag>
       }
       @case ('dot') {
         <nz-badge [nzStatus]="status()" />
       }
       @default {
-        {{ view().text }}
+        <span [attr.title]="hint()">{{ view().text }}</span>
       }
     }
   `,
@@ -53,6 +53,18 @@ export class CrudCell {
 
   /** Variant as a zorro tag color, or undefined when the value declares none. */
   readonly color = computed<NzTagColor | undefined>(() => this.view().variant ?? undefined);
+
+  /**
+   * The value the cell could not show in full — a truncating formatter, say. It
+   * becomes the native `title`, which is the cheapest way to keep the complete value
+   * reachable without pulling a tooltip library into every table.
+   */
+  readonly hint = computed<string | null>(() => {
+    const raw = this.value();
+    if (raw === null || raw === undefined) return null;
+    const full = String(raw);
+    return full !== '' && full !== this.view().text ? full : null;
+  });
 }
 
 function toStatus(variant: string | null): NzBadgeStatusType {
