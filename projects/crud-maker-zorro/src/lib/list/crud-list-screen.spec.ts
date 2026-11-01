@@ -148,6 +148,19 @@ describe('CrudListScreen', () => {
     expect(last.filters['created_at_between']).toEqual([null, '2026-11-02T18:00']);
   });
 
+  it('renders a generic header only when the screen is given one', () => {
+    const bare = setup().element;
+    expect(bare.querySelector('.crud-list-head')).toBeNull();
+
+    const { fixture, element } = setup();
+    fixture.componentRef.setInput('title', 'Users');
+    fixture.componentRef.setInput('subtitle', '3 accounts · roles are replaced');
+    fixture.detectChanges();
+
+    expect(element.querySelector('.crud-list-title')?.textContent).toBe('Users');
+    expect(element.querySelector('.crud-list-subtitle')?.textContent).toBe('3 accounts · roles are replaced');
+  });
+
   it('shows no toolbar when the config exposes nothing to search or filter', () => {
     const { element } = setup(bareConfig);
 

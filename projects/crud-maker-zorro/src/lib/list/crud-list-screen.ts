@@ -49,6 +49,20 @@ interface FilterControl {
   imports: [CrudTable, FormsModule, NzButtonModule, NzInputModule, NzOptionComponent, NzSelectModule],
   template: `
     <div class="crud-list-screen">
+      @if (title() || subtitle()) {
+        <header class="crud-list-head">
+          <div>
+            @if (title(); as heading) {
+              <h1 class="crud-list-title">{{ heading }}</h1>
+            }
+            @if (subtitle(); as sub) {
+              <p class="crud-list-subtitle">{{ sub }}</p>
+            }
+          </div>
+          <ng-content select="[crudActions]" />
+        </header>
+      }
+
       @if (hasToolbar()) {
         <div class="crud-list-toolbar">
           @if (searchable()) {
@@ -133,6 +147,24 @@ interface FilterControl {
   `,
   styles: [
     `
+      .crud-list-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 16px;
+      }
+      .crud-list-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .crud-list-subtitle {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: var(--muted, rgba(0, 0, 0, 0.55));
+      }
       .crud-list-toolbar {
         display: flex;
         flex-wrap: wrap;
@@ -175,6 +207,17 @@ interface FilterControl {
 export class CrudListScreen<T extends object = Record<string, unknown>> {
   readonly config = input.required<ResolvedCrudConfig>();
   readonly controller = input.required<CrudController<T>>();
+
+  /**
+   * Page heading. Optional on purpose: the header belongs to the screen, not to the
+   * entity's data, so it is NOT part of `defineCrudConfig` — that document is
+   * serialisable entity metadata shared by every adapter, and a title there would
+   * have to be translated twice (route title and config) and could not vary per route.
+   */
+  readonly title = input<string | null>(null);
+
+  /** Second line under the title: usually a count the consumer derives from a signal. */
+  readonly subtitle = input<string | null>(null);
 
   /** Optional per-row actions owned by the consumer, forwarded to the table. */
   readonly rowActions = input<TemplateRef<{ $implicit: T }> | null>(null);
