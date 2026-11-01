@@ -121,13 +121,15 @@ interface FilterControl {
         min-width: 200px;
         max-width: 320px;
       }
+      /* Colours come from the host's variables when it has them, so the screen
+         follows a light/dark theme without the package knowing about themes. */
       .crud-toolbar-field span {
         font-size: 12px;
-        color: rgba(0, 0, 0, 0.55);
+        color: var(--muted, rgba(0, 0, 0, 0.55));
       }
       .crud-list-error {
         margin: 0 0 12px;
-        color: #cf1322;
+        color: var(--tag-danger-ink, #cf1322);
       }
     `,
   ],
