@@ -71,6 +71,9 @@ class FakeTransport implements CrudTransport {
 const tick = (ms = 0) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 function setup(conf: ResolvedCrudConfig = config) {
+  // A second call inside one test is legitimate (before/after a setInput); without
+  // the reset Angular refuses to configure an already-instantiated module.
+  TestBed.resetTestingModule();
   const transport = new FakeTransport();
   const controller = new CrudController(conf, transport);
   TestBed.configureTestingModule({ imports: [CrudListScreen] });
@@ -148,17 +151,22 @@ describe('CrudListScreen', () => {
     expect(last.filters['created_at_between']).toEqual([null, '2026-11-02T18:00']);
   });
 
-  it('renders a generic header only when the screen is given one', () => {
-    const bare = setup().element;
-    expect(bare.querySelector('.crud-list-head')).toBeNull();
+  it('renders no header when the screen is given none', () => {
+    const { element } = setup();
 
+    expect(element.querySelector('.crud-list-head')).toBeNull();
+  });
+
+  it('renders the title and subtitle it is given', () => {
     const { fixture, element } = setup();
     fixture.componentRef.setInput('title', 'Users');
     fixture.componentRef.setInput('subtitle', '3 accounts · roles are replaced');
     fixture.detectChanges();
 
     expect(element.querySelector('.crud-list-title')?.textContent).toBe('Users');
-    expect(element.querySelector('.crud-list-subtitle')?.textContent).toBe('3 accounts · roles are replaced');
+    expect(element.querySelector('.crud-list-subtitle')?.textContent).toBe(
+      '3 accounts · roles are replaced',
+    );
   });
 
   it('shows no toolbar when the config exposes nothing to search or filter', () => {
