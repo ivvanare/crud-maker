@@ -20,6 +20,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v7
 
@@ -52,13 +54,22 @@ jobs:
             exit 1
           fi
 
+      # Without the token the publish steps are skipped below: a permanently red
+      # workflow on every tag teaches everyone to ignore red, which is worse than
+      # an honest green run that says it published nothing.
+      - name: warn when publishing is disabled
+        if: startsWith(github.ref, 'refs/tags/v') && env.NPM_TOKEN == ''
+        run: echo "::warning::NPM_TOKEN is not configured - packages are NOT published to npm (git-tag installs still work)"
+
       - name: publish crud-maker
+        if: env.NPM_TOKEN != ''
         run: npm publish dist/crud-maker --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # After the core, so the adapter's peer range resolves against a version that already exists.
       - name: publish crud-maker-zorro
+        if: env.NPM_TOKEN != ''
         run: npm publish dist/crud-maker-zorro --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
