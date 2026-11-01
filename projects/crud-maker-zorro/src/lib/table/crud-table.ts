@@ -11,7 +11,8 @@
  * The table also owns the refetch that a query change implies; the consumer
  * still calls `controller.load()` once to populate the first page.
  */
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, TemplateRef } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   CrudController,
   type ResolvedCrudConfig,
@@ -24,7 +25,7 @@ import { CrudCell } from '../cell/crud-cell';
 
 @Component({
   selector: 'crud-table',
-  imports: [NzTableModule, NzButtonModule, CrudCell],
+  imports: [NzTableModule, NzButtonModule, CrudCell, NgTemplateOutlet],
   template: `
     <nz-table
       #table
@@ -65,12 +66,18 @@ import { CrudCell } from '../cell/crud-cell';
               </td>
             }
             @if (hasActions()) {
-              <td>
+              <td class="crud-row-actions">
                 @if (canUpdate()) {
                   <button nz-button nzSize="small" (click)="edit.emit(row)">Edit</button>
                 }
                 @if (canDelete()) {
                   <button nz-button nzSize="small" nzDanger (click)="remove.emit(row)">Delete</button>
+                }
+                @if (rowActions(); as actionsTemplate) {
+                  <ng-container
+                    [ngTemplateOutlet]="actionsTemplate"
+                    [ngTemplateOutletContext]="{ $implicit: row }"
+                  />
                 }
               </td>
             }
@@ -86,6 +93,13 @@ export class CrudTable<T extends object = Record<string, unknown>> {
   readonly config = input.required<ResolvedCrudConfig>();
   readonly controller = input.required<CrudController<T>>();
 
+  /**
+   * Optional per-row actions the consumer owns (`let-row`). Domain actions that are
+   * not create/update/delete — assigning roles, moderating a review — belong here:
+   * the adapter renders them next to the built-ins and decides nothing.
+   */
+  readonly rowActions = input<TemplateRef<{ $implicit: T }> | null>(null);
+
   /** A row the consumer should open for editing; the adapter never mutates. */
   readonly edit = output<T>();
   /** A row the consumer should delete, after its own confirmation. */
@@ -99,7 +113,9 @@ export class CrudTable<T extends object = Record<string, unknown>> {
   readonly isLoading = computed(() => this.controller().status() === 'loading');
   readonly canUpdate = computed(() => this.controller().can('update'));
   readonly canDelete = computed(() => this.controller().can('delete'));
-  readonly hasActions = computed(() => this.canUpdate() || this.canDelete());
+  readonly hasActions = computed(
+    () => this.canUpdate() || this.canDelete() || this.rowActions() !== null,
+  );
 
   sortOrder(field: ResolvedField): NzTableSortOrder {
     const sort = this.controller().state.sort();
