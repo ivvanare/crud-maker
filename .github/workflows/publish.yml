@@ -58,7 +58,7 @@ jobs:
       # workflow on every tag teaches everyone to ignore red, which is worse than
       # an honest green run that says it published nothing.
       - name: warn when publishing is disabled
-        if: startsWith(github.ref, 'refs/tags/v') && env.NPM_TOKEN == ''
+        if: env.NPM_TOKEN == ''
         run: echo "::warning::NPM_TOKEN is not configured - packages are NOT published to npm (git-tag installs still work)"
 
       - name: publish crud-maker

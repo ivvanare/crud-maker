@@ -29,6 +29,28 @@ and link the built package from your workspace:
 
 Rebuild this repository after every change to it — the link points at `dist/`, not at the source.
 
+### Installing a tag or branch without npm
+
+A git dependency can also install a published-shaped package directly. It must point at the
+**built** directory: `projects/crud-maker` holds sources with no entry points, so installing it
+yields a package nothing can import. The `prepare` script in the root `package.json` builds both
+packages into `dist/` after a git clone installs dependencies, which is what makes `dist/` exist:
+
+```bash
+pnpm add "github:ivvanare/crud-maker#v0.1.0&path:/dist/crud-maker"
+pnpm add "github:ivvanare/crud-maker#v0.1.0&path:/dist/crud-maker-zorro"
+```
+
+`pnpm` 10.26 and later refuses to run a git dependency's lifecycle scripts unless the consumer
+allows it, so approve the build once — otherwise `dist/` never appears and the install fails:
+
+```bash
+pnpm install --allow-build=ng-crud-maker --allow-build=ng-crud-maker-zorro
+```
+
+Note that `prepare` also runs on ordinary local installs of this workspace, so an `pnpm install`
+here builds both packages before any explicit build command.
+
 ## Install (once released)
 
 The install **is** the choice — there is no runtime flag to configure:
