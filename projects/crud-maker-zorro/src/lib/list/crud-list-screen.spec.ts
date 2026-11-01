@@ -19,6 +19,7 @@ const config: ResolvedCrudConfig = defineCrudConfig({
   searchFields: ['email', 'name'],
   fields: [
     { name: 'id', in: { list: false, form: false, detail: true } },
+    { name: 'name', in: { list: true, form: false } },
     { name: 'email', in: { list: true, form: false } },
     {
       name: 'status',
