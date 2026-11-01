@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { defineCrudConfig, type ResolvedField } from 'crud-maker';
 import { CrudCell } from './crud-cell';
 
@@ -22,12 +22,54 @@ async function render(field: ResolvedField, value: unknown) {
   return fixture.nativeElement as HTMLElement;
 }
 
+/** A field whose formatter shortens the value the cell receives. */
+function truncatedField(): ResolvedField {
+  const config = defineCrudConfig({
+    key: 'audit-events',
+    endpoint: 'admin/audit-events',
+    fields: [
+      { name: 'email_hash', formatter: { name: 'truncate', params: { length: 8 } } },
+    ],
+  });
+  const field = config.fieldMap.get('email_hash');
+  if (!field) throw new Error('field "email_hash" was not resolved');
+  return field;
+}
+
+const tick = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
 describe('CrudCell', () => {
   it('renders a plain value as text, with no zorro primitive', async () => {
     const host = await render(resolveField(), 'draft');
     expect(host.textContent?.trim()).toBe('draft');
     expect(host.querySelector('nz-tag')).toBeNull();
     expect(host.querySelector('nz-badge')).toBeNull();
+  });
+
+  it('offers no copy button when the value is shown in full', async () => {
+    const host = await render(resolveField(), 'draft');
+
+    expect(host.querySelector('button.crud-copy')).toBeNull();
+  });
+
+  it('copies the untruncated value when the text was shortened', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+
+    const host = await render(truncatedField(), 'abcdef0123456789');
+    // What the cell shows is the short form...
+    expect(host.textContent?.trim()).toBe('abcdef01…');
+
+    const button = host.querySelector('button.crud-copy') as HTMLButtonElement;
+    expect(button).not.toBeNull();
+    button.click();
+    await tick();
+
+    // ...but the clipboard gets everything, which is what the filter needs.
+    expect(writeText).toHaveBeenCalledWith('abcdef0123456789');
   });
 
   it('renders a tag cell with the variant as its color', async () => {
