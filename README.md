@@ -8,12 +8,12 @@ Two packages, one direction: **the adapter depends on the core, never the revers
 
 | Package | What it is |
 |---------|-----------|
-| [`crud-maker`](projects/crud-maker/README.md) | the whole engine: config, state, controller, transport, cell views. **No UI dependency.** |
-| [`crud-maker-zorro`](projects/crud-maker-zorro/README.md) | ng-zorro-antd screens: `crud-cell`, `crud-table`, `crud-form`, `crud-detail`. |
+| [`ng-crud-maker`](projects/crud-maker/README.md) | the whole engine: config, state, controller, transport, cell views. **No UI dependency.** |
+| [`ng-crud-maker-zorro`](projects/crud-maker-zorro/README.md) | ng-zorro-antd screens: `crud-cell`, `crud-table`, `crud-form`, `crud-detail`. |
 
 ## Status
 
-**Not on npm yet.** The code is published here while it stabilises; `pnpm add crud-maker` will
+**Not on npm yet.** The code is published here while it stabilises; `pnpm add ng-crud-maker` will
 fail with a 404 until the first release. Until then, consume it from this repository:
 
 ```bash
@@ -24,7 +24,7 @@ cd ../crud-maker && pnpm install && pnpm exec ng build crud-maker
 and link the built package from your workspace:
 
 ```json
-{ "dependencies": { "crud-maker": "link:../crud-maker/dist/crud-maker" } }
+{ "dependencies": { "ng-crud-maker": "link:../crud-maker/dist/crud-maker" } }
 ```
 
 Rebuild this repository after every change to it — the link points at `dist/`, not at the source.
@@ -35,20 +35,20 @@ The install **is** the choice — there is no runtime flag to configure:
 
 ```bash
 # logic only, you render with your own components
-pnpm add crud-maker
+pnpm add ng-crud-maker
 
 # the same engine plus ng-zorro screens
-pnpm add crud-maker crud-maker-zorro ng-zorro-antd
+pnpm add ng-crud-maker ng-crud-maker-zorro ng-zorro-antd
 ```
 
-A "manual" UI is not a package: it is `crud-maker` alone, with the cell hints and validators still
+A "manual" UI is not a package: it is `ng-crud-maker` alone, with the cell hints and validators still
 doing their job as data. A PrimeNG adapter would be additive — a new package on the same contract,
 never a change to the core.
 
 ## Quick example
 
 ```ts
-import { CrudController, defineCrudConfig } from 'crud-maker';
+import { CrudController, defineCrudConfig } from 'ng-crud-maker';
 
 export const faqsConfig = defineCrudConfig({
   key: 'faqs',

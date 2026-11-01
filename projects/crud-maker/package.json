@@ -1,5 +1,5 @@
 {
-  "name": "crud-maker",
+  "name": "ng-crud-maker",
   "version": "0.1.0",
   "description": "CRUD screens from one JSON-shaped config: validated schema, signal-backed list state and a transport-agnostic engine. Logic only, no UI dependency.",
   "license": "MIT",

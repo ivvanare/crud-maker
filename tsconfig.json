@@ -4,8 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "crud-maker": ["./dist/crud-maker"],
-      "crud-maker-zorro": ["./dist/crud-maker-zorro"]
+      "ng-crud-maker": ["./dist/crud-maker"],
+      "ng-crud-maker-zorro": ["./dist/crud-maker-zorro"]
     },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

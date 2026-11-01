@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it, vi } from 'vitest';
-import { defineCrudConfig, type ResolvedField } from 'crud-maker';
+import { defineCrudConfig, type ResolvedField } from 'ng-crud-maker';
 import { CrudCell } from './crud-cell';
 
 function resolveField(cell?: Record<string, unknown>): ResolvedField {

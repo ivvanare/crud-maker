@@ -8,7 +8,7 @@ import {
   type ListQuery,
   type ListResult,
   type ResolvedCrudConfig,
-} from 'crud-maker';
+} from 'ng-crud-maker';
 import { CrudForm } from './crud-form';
 
 const config: ResolvedCrudConfig = defineCrudConfig({

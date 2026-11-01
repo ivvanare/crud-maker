@@ -1,5 +1,5 @@
 /**
- * Public config vocabulary for crud-maker.
+ * Public config vocabulary for ng-crud-maker.
  *
  * Everything declared here must stay JSON-serializable: no functions, no
  * classes, no prototypes. Custom behavior (cell formatters, validators) is

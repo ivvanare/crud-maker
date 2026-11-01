@@ -8,7 +8,7 @@ import {
   type ListQuery,
   type ListResult,
   type ResolvedCrudConfig,
-} from 'crud-maker';
+} from 'ng-crud-maker';
 import { CrudListScreen } from './crud-list-screen';
 
 const config: ResolvedCrudConfig = defineCrudConfig({

@@ -10,7 +10,7 @@
  * degrades to `default` instead of pushing a free-form string into a typed API.
  */
 import { Component, computed, input, OnDestroy, signal } from '@angular/core';
-import { resolveCellView, type CellView, type ResolvedField } from 'crud-maker';
+import { resolveCellView, type CellView, type ResolvedField } from 'ng-crud-maker';
 import { NzBadgeModule, type NzBadgeStatusType } from 'ng-zorro-antd/badge';
 import { NzTagModule, type NzTagColor } from 'ng-zorro-antd/tag';
 

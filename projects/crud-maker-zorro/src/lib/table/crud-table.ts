@@ -18,7 +18,7 @@ import {
   type ResolvedCrudConfig,
   type ResolvedField,
   type SortDirection,
-} from 'crud-maker';
+} from 'ng-crud-maker';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzTableModule, type NzTableSortOrder } from 'ng-zorro-antd/table';
 import { CrudCell } from '../cell/crud-cell';

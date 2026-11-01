@@ -1,20 +1,20 @@
-# crud-maker
+# ng-crud-maker
 
-CRUD screens from one JSON-shaped config. You declare an entity — fields, views, filters, sorting, validation, actions — and `crud-maker` gives you a validated schema, a signal-based list state, and a CRUD engine that talks to any backend through a small transport interface. No UI library is coupled to it: this package is logic only, and every UI library is a separate adapter you install or ignore.
+CRUD screens from one JSON-shaped config. You declare an entity — fields, views, filters, sorting, validation, actions — and `ng-crud-maker` gives you a validated schema, a signal-based list state, and a CRUD engine that talks to any backend through a small transport interface. No UI library is coupled to it: this package is logic only, and every UI library is a separate adapter you install or ignore.
 
 Audience: teams building admin panels in Angular. One config object + one screen is the whole cost.
 
 ## Packages and UI adapters
 
-`crud-maker` is a family, and **the install is the choice**:
+`ng-crud-maker` is a family, and **the install is the choice**:
 
 | What you install | What you get |
 |------------------|--------------|
-| `crud-maker` | the whole engine — config, state, controller, transport, cell views. You render with your own components. |
-| `crud-maker` + `crud-maker-zorro` + `ng-zorro-antd` | the same engine plus table, form and detail screens built on ng-zorro. |
-| `crud-maker` + a future `crud-maker-primeng` | the same engine plus PrimeNG screens. |
+| `ng-crud-maker` | the whole engine — config, state, controller, transport, cell views. You render with your own components. |
+| `ng-crud-maker` + `ng-crud-maker-zorro` + `ng-zorro-antd` | the same engine plus table, form and detail screens built on ng-zorro. |
+| `ng-crud-maker` + a future `ng-crud-maker-primeng` | the same engine plus PrimeNG screens. |
 
-The direction is one-way: an adapter depends on the core, never the reverse. `crud-maker` declares no UI
+The direction is one-way: an adapter depends on the core, never the reverse. `ng-crud-maker` declares no UI
 dependency and its bundle imports none, so adding a third adapter touches no core source file. A "manual"
 UI is not a package — it is core alone, with the cell hints and validators still doing their job as data.
 
@@ -24,7 +24,7 @@ UI is not a package — it is core alone, with the cell hints and validators sti
 // 1. Describe the entity (a plain object with exactly the shape of JSON). Do it
 //    once, at startup: defineCrudConfig throws on any problem, so a bad config
 //    fails fast instead of misbehaving at runtime.
-import { CrudController, defineCrudConfig, HttpTransport } from 'crud-maker';
+import { CrudController, defineCrudConfig, HttpTransport } from 'ng-crud-maker';
 
 export const faqsConfig = defineCrudConfig({
   key: 'faqs',
@@ -76,8 +76,8 @@ A complete working screen lives at `src/app/demo/` (FAQ vertical). It uses an in
 
 ## Consuming it
 
-- Import **only from `crud-maker`** (the public API is `src/public-api.ts`; deep imports are not supported).
-- Install as a normal dependency: `pnpm add crud-maker`. For UI screens add an adapter — `pnpm add crud-maker-zorro ng-zorro-antd` — and import only from `crud-maker-zorro`.
+- Import **only from `ng-crud-maker`** (the public API is `src/public-api.ts`; deep imports are not supported).
+- Install as a normal dependency: `pnpm add ng-crud-maker`. For UI screens add an adapter — `pnpm add ng-crud-maker-zorro ng-zorro-antd` — and import only from `ng-crud-maker-zorro`.
 - Tests: `ng test crud-maker` (vitest, jsdom). The library has no runtime dependency beyond `@angular/core` and `@angular/common`.
 
 ## Config reference — `defineCrudConfig(raw): ResolvedCrudConfig`
@@ -164,7 +164,7 @@ A select can declare its options as a reference instead of a static list:
 ```
 
 ```ts
-import { OptionResolver } from 'crud-maker';
+import { OptionResolver } from 'ng-crud-maker';
 
 // Register the referenced entities by resource key, sharing the transport.
 const options = new OptionResolver(transport, { faqCategories: categoriesConfig });
@@ -204,7 +204,7 @@ Configs reference behavior by name so they stay serializable. Built-ins are inst
 | `email` | malformed address | — |
 
 ```ts
-import { registerFormatter, registerValidator } from 'crud-maker';
+import { registerFormatter, registerValidator } from 'ng-crud-maker';
 
 registerFormatter('currency', (value, params) =>
   new Intl.NumberFormat('en-US', {
@@ -279,7 +279,7 @@ The demo's `MemoryTransport` (`src/app/demo/memory-transport.ts`) is the canonic
 
 ## Out of scope (by design)
 
-- **UI**: no components ship in this package. Screens live in an adapter — `crud-maker-zorro` today, and a PrimeNG adapter only when the contract is proven.
+- **UI**: no components ship in this package. Screens live in an adapter — `ng-crud-maker-zorro` today, and a PrimeNG adapter only when the contract is proven.
 - **Auth / i18n / notifications**: injected via `hooks`/registry, never imported.
 - **Runtime adapter selection**: the choice is made at install time, so there is no adapter registry to configure.
 - **Option resource fetching** (see Config reference).

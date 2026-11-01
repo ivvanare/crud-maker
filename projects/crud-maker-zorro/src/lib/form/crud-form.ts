@@ -31,7 +31,7 @@ import {
   type OptionResolver,
   type ResolvedCrudConfig,
   type ResolvedField,
-} from 'crud-maker';
+} from 'ng-crud-maker';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule, type NzSelectOptionInterface } from 'ng-zorro-antd/select';
 

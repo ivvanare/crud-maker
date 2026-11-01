@@ -10,7 +10,7 @@
  * controller (`controller.detail(id)`), so the adapter never fetches twice.
  */
 import { Component, computed, input } from '@angular/core';
-import type { ResolvedCrudConfig, ResolvedField } from 'crud-maker';
+import type { ResolvedCrudConfig, ResolvedField } from 'ng-crud-maker';
 import { CrudCell } from '../cell/crud-cell';
 
 @Component({

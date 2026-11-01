@@ -1,7 +1,7 @@
 {
-  "name": "crud-maker-zorro",
+  "name": "ng-crud-maker-zorro",
   "version": "0.1.0",
-  "description": "ng-zorro-antd adapter for crud-maker: table, form and detail screens built on the core adapter contract.",
+  "description": "ng-zorro-antd adapter for ng-crud-maker: table, form and detail screens built on the core adapter contract.",
   "license": "MIT",
   "author": "ivvanare",
   "homepage": "https://github.com/ivvanare/crud-maker#readme",
@@ -26,7 +26,7 @@
   "peerDependencies": {
     "@angular/common": "^22.0.0",
     "@angular/core": "^22.0.0",
-    "crud-maker": "^0.1.0",
+    "ng-crud-maker": "^0.1.0",
     "ng-zorro-antd": "^22.0.0"
   },
   "dependencies": {

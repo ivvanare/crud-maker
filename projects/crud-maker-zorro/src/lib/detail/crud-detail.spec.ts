@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
-import { defineCrudConfig, type ResolvedCrudConfig } from 'crud-maker';
+import { defineCrudConfig, type ResolvedCrudConfig } from 'ng-crud-maker';
 import { CrudDetail } from './crud-detail';
 
 const config: ResolvedCrudConfig = defineCrudConfig({

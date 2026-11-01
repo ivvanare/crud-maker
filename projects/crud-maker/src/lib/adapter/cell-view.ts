@@ -3,7 +3,7 @@
  * raw value become a presentation view.
  *
  * This is pure presentation *logic* with no UI dependency, so it belongs to the
- * core: every adapter — `crud-maker-zorro`, a future `crud-maker-primeng`, or a
+ * core: every adapter — `ng-crud-maker-zorro`, a future `ng-crud-maker-primeng`, or a
  * screen a project writes by hand — renders the same `CellView` for the same
  * config, and none of them re-derives formatting or variants. An adapter maps
  * `kind` and `variant` to its own primitives and decides nothing else.

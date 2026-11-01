@@ -20,7 +20,7 @@ import {
   type FilterKind,
   type ResolvedCrudConfig,
   type ResolvedField,
-} from 'crud-maker';
+} from 'ng-crud-maker';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzOptionComponent, NzSelectModule } from 'ng-zorro-antd/select';
