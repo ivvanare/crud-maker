@@ -59,7 +59,7 @@ jobs:
       # an honest green run that says it published nothing.
       - name: warn when publishing is disabled
         if: env.NPM_TOKEN == ''
-        run: echo "::warning::NPM_TOKEN is not configured - packages are NOT published to npm (git-tag installs still work)"
+        run: echo "::warning::NPM_TOKEN is not configured - packages are NOT published to npm"
 
       - name: publish crud-maker
         if: env.NPM_TOKEN != ''

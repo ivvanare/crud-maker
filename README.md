@@ -18,7 +18,9 @@ fail with a 404 until the first release. Until then, consume it from this reposi
 
 ```bash
 git clone https://github.com/ivvanare/crud-maker.git ../crud-maker
-cd ../crud-maker && pnpm install && pnpm exec ng build crud-maker
+cd ../crud-maker && pnpm install
+pnpm exec ng build crud-maker          # the adapter imports the core, so it must exist first
+pnpm exec ng build crud-maker-zorro    # only if you consume the zorro screens
 ```
 
 and link the built package from your workspace:
