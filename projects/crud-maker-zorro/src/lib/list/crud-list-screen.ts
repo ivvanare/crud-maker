@@ -66,7 +66,10 @@ interface FilterControl {
           }
 
           @for (control of filterControls(); track control.field.name) {
-            <label class="crud-toolbar-field">
+            <label
+              class="crud-toolbar-field"
+              [class.crud-toolbar-field--range]="control.range"
+            >
               <span>{{ control.field.label }}</span>
               @if (control.range) {
                 <span class="crud-toolbar-range">
@@ -152,6 +155,15 @@ interface FilterControl {
       .crud-toolbar-range {
         display: flex;
         gap: 6px;
+      }
+      /* Native date inputs refuse to shrink below their intrinsic width, so the pair
+         needs room of its own and each input must be allowed to flex. */
+      .crud-toolbar-field--range {
+        max-width: 420px;
+      }
+      .crud-toolbar-range input {
+        flex: 1 1 0;
+        min-width: 0;
       }
       .crud-list-error {
         margin: 0 0 12px;
