@@ -7,7 +7,6 @@
   "packageManager": "pnpm@12.15.0",
   "scripts": {
     "build": "ng build crud-maker && ng build crud-maker-zorro",
-    "prepare": "pnpm run build",
     "test": "ng test crud-maker --watch=false && ng test crud-maker-zorro --watch=false",
     "lint:types": "tsc -p projects/crud-maker/tsconfig.lib.json --noEmit"
   },
